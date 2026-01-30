@@ -9,16 +9,25 @@ namespace AIHelper.Services
     public class SonarProvider : IScanProvider
     {
         private readonly string _apiUrl;
+        private readonly int _pollingTimeoutSeconds;
+        private readonly int _pollingIntervalSeconds;
         private readonly ILogger<SonarProvider> _logger;
         
-        public SonarProvider(string? apiUrl = null, ILogger<SonarProvider> logger = null)
+        public SonarProvider(string? apiUrl = null, int pollingTimeoutSeconds = 300, int pollingIntervalSeconds = 10, ILogger<SonarProvider> logger = null)
         {
             _apiUrl = apiUrl ?? "http://localhost:9000";
+            _pollingTimeoutSeconds = pollingTimeoutSeconds;
+            _pollingIntervalSeconds = pollingIntervalSeconds;
             _logger = logger;
         }
 
-        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? key = null, string? secret = null)
+        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? taskId = null, string? key = null, string? secret = null)
         {
+            if (!string.IsNullOrEmpty(taskId))
+            {
+                await PollTaskStatusAsync(taskId, token);
+            }
+
             _logger?.LogInformation("Fetching Sonar issues for project {Id}, severity {Severity}", id, severity);
             var client = new RestClient(_apiUrl);
 
@@ -109,6 +118,26 @@ namespace AIHelper.Services
             return remediationTasks;
         }
 
+        private async Task<string> CheckTaskStatusAsync(string taskId, string token)
+        {
+            _logger?.LogInformation("Checking SonarQube task status for {TaskId}", taskId);
+            var client = new RestClient(_apiUrl);
+            var request = new RestRequest("/api/ce/task", Method.Get);
+            request.AddParameter("id", taskId);
+            request.AddHeader("Authorization", $"Bearer {token}");
+
+            var response = await client.ExecuteGetAsync<SonarTaskResponse>(request);
+
+            if (!response.IsSuccessful || response.Data?.Task == null)
+            {
+                _logger?.LogError("Failed to retrieve SonarQube task status for {TaskId}: {ErrorMessage}", taskId, response.ErrorMessage);
+                throw new Exception($"Failed to retrieve SonarQube task status: {response.ErrorMessage}");
+            }
+
+            _logger?.LogInformation("SonarQube task {TaskId} status is {Status}", taskId, response.Data.Task.Status);
+            return response.Data.Task.Status;
+        }
+
         public async Task UpdateIssueStatusAsync(string issueId, string status, string token)
         {
             _logger?.LogInformation("Updating Sonar issue {IssueId} status to {Status}", issueId, status);
@@ -166,6 +195,36 @@ namespace AIHelper.Services
                 _logger?.LogWarning(ex, "Failed to convert HTML to Markdown: {HtmlContent}", htmlContent);
                 return htmlContent; // Return original content if conversion fails
             }
+        }
+
+        private async Task PollTaskStatusAsync(string taskId, string token)
+        {
+            var timeout = TimeSpan.FromSeconds(_pollingTimeoutSeconds);
+            var interval = TimeSpan.FromSeconds(_pollingIntervalSeconds);
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+
+            while (stopwatch.Elapsed < timeout)
+            {
+                var status = await CheckTaskStatusAsync(taskId, token);
+                switch (status)
+                {
+                    case "SUCCESS":
+                        _logger?.LogInformation("SonarQube task {TaskId} completed successfully.", taskId);
+                        return;
+                    case "FAILED":
+                    case "CANCELED":
+                        throw new Exception($"SonarQube task {taskId} failed with status: {status}");
+                    case "PENDING":
+                    case "IN_PROGRESS":
+                        _logger?.LogInformation("SonarQube task {TaskId} is still in progress with status: {status}. Waiting for {Interval} seconds.", taskId, status, interval.TotalSeconds);
+                        await Task.Delay(interval);
+                        break;
+                    default:
+                        throw new Exception($"Unknown SonarQube task status: {status}");
+                }
+            }
+
+            throw new TimeoutException($"Timed out waiting for SonarQube task {taskId} to complete.");
         }
     }
 }

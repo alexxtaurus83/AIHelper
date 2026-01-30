@@ -46,7 +46,8 @@ namespace AIHelper.Services
             var issues = await scanProvider.GetIssuesAsync(
                 request.ProjectKeyOrReleaseId,
                 request.MinSeverity,
-                scannerToken);
+                scannerToken,
+                request.TaskId);
             _logger.LogInformation("Fetched {IssueCount} issues from scanner", issues.Count);
             
             // Group the issues by FilePath (issues are already filtered by the provider based on MinSeverity)
@@ -54,18 +55,12 @@ namespace AIHelper.Services
             _logger.LogInformation("Grouped issues into {FileGroupCount} file groups", fileGroups.Count());
             _logger.LogInformation("Grouped issues into {FileGroupCount} file groups", fileGroups.Count());
             
-            // Call IGitProvider.CreateBranchAsync
-            _logger.LogInformation("Creating new branch {NewBranchName} from {SourceBranch}", request.NewBranchName, request.SourceBranch);
-            await _gitProvider.CreateBranchAsync(
-                request.RepoId,
-                request.SourceBranch,
-                request.NewBranchName,
-                request.GitlabToken);
-            _logger.LogInformation("Created new branch {NewBranchName} successfully", request.NewBranchName);
-            
             int filesProcessed = 0;
             int totalFiles = fileGroups.Count();
             _logger.LogInformation("Starting to process {TotalFiles} files", totalFiles);
+            
+            // Dictionary to store the patched file contents in memory
+            var patchedFiles = new Dictionary<string, string>();
             
             // Loop through each file group
             foreach (var fileGroup in fileGroups)
@@ -96,21 +91,39 @@ namespace AIHelper.Services
                 var aiResponse = await _aiAgent.FixCodeAsync(fileContent, fileGroup.ToList());
                 _logger.LogDebug("Received response from AI agent for file {FilePath}. Duration: {Duration}ms", filePath, aiResponse.Duration.TotalMilliseconds);
                 
-                // Commit the fixed code using IGitProvider.CommitFileAsync
-                _logger.LogDebug("Committing fixed file {FilePath} to branch {NewBranchName}", filePath, request.NewBranchName);
-                await _gitProvider.CommitFileAsync(
-                    request.RepoId,
-                    request.NewBranchName,
-                    filePath,
-                    aiResponse.FixedCode, // Assuming AiResponse has a FixedCode property
-                    $"Fix issues in {filePath}",
-                    request.GitlabToken);
-                _logger.LogDebug("Committed fixed file {FilePath} successfully", filePath);
+                // Store the patched code in memory instead of committing immediately
+                patchedFiles[filePath] = aiResponse.FixedCode;
                 
                 filesProcessed++;
                 _logger.LogInformation("Completed processing file {FilePath} ({CurrentFile}/{TotalFiles})", filePath, filesProcessed, totalFiles);
             }
             _logger.LogInformation("Processed {FilesProcessed} out of {TotalFiles} files", filesProcessed, totalFiles);
+            
+            // After all files have been successfully patched by the AI, create a new Git branch
+            _logger.LogInformation("Creating new branch {NewBranchName} from {SourceBranch}", request.NewBranchName, request.SourceBranch);
+            await _gitProvider.CreateBranchAsync(
+                request.RepoId,
+                request.SourceBranch,
+                request.NewBranchName,
+                request.GitlabToken);
+            _logger.LogInformation("Created new branch {NewBranchName} successfully", request.NewBranchName);
+            
+            // Now commit all the patched files to the new branch
+            foreach (var patchedFile in patchedFiles)
+            {
+                var filePath = patchedFile.Key;
+                var fixedCode = patchedFile.Value;
+                
+                _logger.LogDebug("Committing fixed file {FilePath} to branch {NewBranchName}", filePath, request.NewBranchName);
+                await _gitProvider.CommitFileAsync(
+                    request.RepoId,
+                    request.NewBranchName,
+                    filePath,
+                    fixedCode, // Using the stored patched code
+                    $"Fix issues in {filePath}",
+                    request.GitlabToken);
+                _logger.LogDebug("Committed fixed file {FilePath} successfully", filePath);
+            }
             
             // After the loop, create a merge request using IGitProvider.CreateMergeRequestAsync
             _logger.LogInformation("Creating merge request from {NewBranchName} to {TargetBranch}", request.NewBranchName, request.TargetBranch);

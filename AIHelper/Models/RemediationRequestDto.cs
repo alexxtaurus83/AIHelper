@@ -61,4 +61,9 @@ public class RemediationRequestDto
     /// Gets or sets the scanner access token.
     /// </summary>
     public string? ScannerToken { get; set; }
+    
+    /// <summary>
+    /// Gets or sets the SonarQube task ID.
+    /// </summary>
+    public string? TaskId { get; set; }
 }

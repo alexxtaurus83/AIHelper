@@ -16,7 +16,7 @@ namespace AIHelper.Services
             _apiUrl = apiUrl ?? "https://api.ams.fortify.com";
             _logger = logger;
         }
-        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? key = null, string? secret = null)
+        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? taskId = null, string? key = null, string? secret = null)
         {
             _logger?.LogInformation("Fetching Fortify issues for release {Id}, severity {Severity}", id, severity);
             var client = new RestClient(_apiUrl);

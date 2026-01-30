@@ -1,14 +1,14 @@
 using AIHelper.Interfaces;
 using AIHelper.Models;
-using Microsoft.ML.Tokenizers;
+using DiffMatchPatch;
 using RestSharp;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
+using TextDiff;
 
 namespace AIHelper.Services
 {
@@ -34,7 +34,7 @@ namespace AIHelper.Services
             _logger?.LogDebug("Processing issues: {@Issues}", issues.Select(i => new { i.ScannerIssueId, i.TypeCategory, i.FilePath, i.StartLine, i.Severity }));
 
             // Use the injected parameters
-            var aiSystemPrompt = Environment.GetEnvironmentVariable("AI_SYSTEM_PROMPT") ?? "You are a Senior Security Engineer. You will receive a source file and a list of security issues. You must fix ALL listed issues in the code. Return ONLY the full, valid source code. No markdown, no explanations.";
+            var aiSystemPrompt = Environment.GetEnvironmentVariable("AI_SYSTEM_PROMPT");
             var aiModel = _model;
             var aiApiKey = _apiKey; // Use the injected API key, not the hardcoded one
             
@@ -89,9 +89,9 @@ namespace AIHelper.Services
                 {
                     new { role = "system", content = aiSystemPrompt },
                     new { role = "user", content = userPrompt }
-                },                
+                },
                 temperature = 0.2, // Lower temperature for more deterministic output
-                stream = false,  
+                stream = false,
                 top_p = 1
             };
             
@@ -104,8 +104,8 @@ namespace AIHelper.Services
                 throw new Exception($"AI API call failed: {response.ErrorMessage}");
             }
             
-            string fixedCode = null;
-            // Parse the JSON response to extract the fixed code
+            string diffString = null;
+            // Parse the JSON response to extract the diff string
             using var jsonDocument = JsonDocument.Parse(response.Content);
             var rootElement = jsonDocument.RootElement;
             
@@ -117,26 +117,55 @@ namespace AIHelper.Services
                 if (choiceElement.TryGetProperty("message", out var messageElement) &&
                     messageElement.TryGetProperty("content", out var contentElement))
                 {
-                    fixedCode = contentElement.GetString();
+                    diffString = contentElement.GetString();
                 }
             }
             
-            if (string.IsNullOrEmpty(fixedCode))
+            if (string.IsNullOrEmpty(diffString))
             {
                 // If the expected structure wasn't found, throw an exception
                 _logger?.LogError("AI API response did not contain expected 'choices[0].message.content' structure.");
                 throw new Exception("AI API response did not contain expected structure.");
             }
 
-            stopwatch.Stop();
-            _logger?.LogDebug("Received response from AI. Duration: {Duration}ms", stopwatch.ElapsedMilliseconds);
-            _logger?.LogInformation("AI code fix completed. Duration: {Duration}ms", stopwatch.ElapsedMilliseconds);
-            
-            return new AiResponse
+            try
             {
-                FixedCode = fixedCode,
-                Duration = stopwatch.Elapsed
-            };
+                // Strip markdown code block fences from the AI's response
+                var cleanDiffString = diffString;
+                if (cleanDiffString.StartsWith("```diff"))
+                {
+                    cleanDiffString = cleanDiffString.Substring(7); // Remove "```diff"
+                }
+                if (cleanDiffString.EndsWith("```"))
+                {
+                    cleanDiffString = cleanDiffString.Substring(0, cleanDiffString.Length - 3); // Remove "```"
+                }
+                cleanDiffString = cleanDiffString.Trim();
+
+                diff_match_patch dmp = new diff_match_patch();
+                var patch = dmp.patch_fromText( cleanDiffString );
+                var patchedCode = (string)dmp.patch_apply(patch, code)[0];
+
+                var textDiffer = new TextDiffer();
+                patchedCode = textDiffer.Process(code, cleanDiffString).Text;
+
+
+                stopwatch.Stop();
+                _logger?.LogDebug("Received response from AI and applied patch. Duration: {Duration}ms", stopwatch.ElapsedMilliseconds);
+                _logger?.LogInformation("AI code fix completed. Duration: {Duration}ms", stopwatch.ElapsedMilliseconds);
+                
+                return new AiResponse
+                {
+                    FixedCode = patchedCode, // The patched code
+                    Duration = stopwatch.Elapsed
+                };
+            }
+            catch (Exception ex)
+            {
+                _logger?.LogError(ex, "An error occurred while applying the diff.");
+                // Re-throw or handle as appropriate
+                throw;
+            }
         }
 
         /*private async Task<long> GetModelMaxTokens(RestClient client, string apiKey, string model)
