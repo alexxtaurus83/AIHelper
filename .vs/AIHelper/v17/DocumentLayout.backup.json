@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\controllers\\remediationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\controllers\\remediationcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\services\\remediationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\services\\remediationservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\services\\gitlabprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\services\\gitlabprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\services\\aiagent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\services\\aiagent.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|d:\\sonarqube-26.1.0.118079\\aihelper\\aihelper\\aihelper\\services\\sonarprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E2F1EDBE-25F1-4C44-9011-CD5C1B7EB9F6}|AIHelper\\AIHelper.csproj|solutionrelative:aihelper\\services\\sonarprovider.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Controllers\\AIHelperController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:AIHelper\\Controllers\\AIHelperController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "SonarProvider.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\SonarProvider.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Services\\SonarProvider.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\SonarProvider.cs",
+              "RelativeToolTip": "AIHelper\\Services\\SonarProvider.cs",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAWwF0AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T01:55:41.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "GitLabProvider.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\GitLabProvider.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Services\\GitLabProvider.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\GitLabProvider.cs",
+              "RelativeToolTip": "AIHelper\\Services\\GitLabProvider.cs",
+              "ViewState": "AgIAAFoAAAAAAAAAAAAAwHUAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T01:55:41.921Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "AiAgent.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\AiAgent.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Services\\AiAgent.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\AiAgent.cs",
+              "RelativeToolTip": "AIHelper\\Services\\AiAgent.cs",
+              "ViewState": "AgIAAGsAAAAAAAAAAAAowIsAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T01:20:09.159Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "RemediationService.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\RemediationService.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Services\\RemediationService.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Services\\RemediationService.cs",
+              "RelativeToolTip": "AIHelper\\Services\\RemediationService.cs",
+              "ViewState": "AgIAAGwAAAAAAAAAAAArwIcAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T00:51:23.298Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "RemediationController.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Controllers\\RemediationController.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Controllers\\RemediationController.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Controllers\\RemediationController.cs",
+              "RelativeToolTip": "AIHelper\\Controllers\\RemediationController.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAACIAAAAMAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-22T00:51:00.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "AIHelperController.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Controllers\\AIHelperController.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Controllers\\AIHelperController.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Controllers\\AIHelperController.cs",
+              "RelativeToolTip": "AIHelper\\Controllers\\AIHelperController.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T02:34:34.384Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Program.cs",
+              "RelativeDocumentMoniker": "AIHelper\\Program.cs",
+              "ToolTip": "D:\\sonarqube-26.1.0.118079\\aihelper\\AIHelper\\AIHelper\\Program.cs",
+              "RelativeToolTip": "AIHelper\\Program.cs",
+              "ViewState": "AgIAAAEAAAAAAAAAAAAiwBAAAAAiAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-21T02:33:52.366Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
