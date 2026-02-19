@@ -78,7 +78,7 @@ namespace AIHelper.Services
             _logger?.LogInformation("Committing file {FilePath} to branch {Branch} in repo {RepoId}", filePath, branch, repoId);
             var client = new RestClient(_apiUrl);
             var request = new RestRequest($"/projects/{repoId}/repository/commits", Method.Post);
-            request.AddParameter("branch", "feature/demo2"); //branch
+            request.AddParameter("branch", branch); //branch
             request.AddParameter("commit_message", message);
             request.AddParameter("actions[][action]", "update");
             request.AddParameter("actions[][file_path]", filePath);
@@ -102,8 +102,8 @@ namespace AIHelper.Services
             _logger?.LogInformation("Creating merge request from {Source} to {Target} in repo {RepoId}", source, target, repoId);
             var client = new RestClient(_apiUrl);
             var request = new RestRequest($"/projects/{repoId}/merge_requests", Method.Post);
-            request.AddParameter("source_branch", "feature/demo2"); //source
-            request.AddParameter("target_branch", "main"); ///target
+            request.AddParameter("source_branch", source); //source
+            request.AddParameter("target_branch", target); ///target
             request.AddParameter("title", title);
             request.AddHeader("PRIVATE-TOKEN", token);
             _logger?.LogDebug("Making API call to create merge request: POST {_apiUrl}/projects/{RepoId}/merge_requests", _apiUrl, repoId);

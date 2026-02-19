@@ -21,26 +21,55 @@ namespace AIHelper.Services
             _logger = logger;
         }
 
-        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? taskId = null, string? key = null, string? secret = null)
+        public async Task<List<RemediationTask>> GetIssuesAsync(
+            string projectKeyOrReleaseId,
+            string? severities,
+            string? impactSeverities,
+            string? impactSoftwareQualities,
+            string token,            
+            string? taskId = null,
+            string? key = null,
+            string? secret = null)
         {
             if (!string.IsNullOrEmpty(taskId))
             {
                 await PollTaskStatusAsync(taskId, token);
             }
+                       
 
-            _logger?.LogInformation("Fetching Sonar issues for project {Id}, severity {Severity}", id, severity);
+            _logger?.LogInformation(
+                "Fetching Sonar issues for project {Id}, severities {Severities}, impactSeverities {ImpactSeverities}, impactSoftwareQualities {ImpactSoftwareQualities}",
+                projectKeyOrReleaseId,
+                severities,
+                impactSeverities,
+                impactSoftwareQualities);
+
             var client = new RestClient(_apiUrl);
 
             // First API call to get issues
             var searchRequest = new RestRequest("/api/issues/search", Method.Get);
-            searchRequest.AddParameter("componentKeys", id);
-            if (!string.IsNullOrEmpty(severity))
+            searchRequest.AddParameter("componentKeys", projectKeyOrReleaseId);
+            if (!string.IsNullOrWhiteSpace(severities))
             {
-                searchRequest.AddParameter("severities", severity);
+                searchRequest.AddParameter("severities", severities);
+            }
+            if (!string.IsNullOrWhiteSpace(impactSeverities))
+            {
+                searchRequest.AddParameter("impactSeverities", impactSeverities);
+            }
+            if (!string.IsNullOrWhiteSpace(impactSoftwareQualities))
+            {
+                searchRequest.AddParameter("impactSoftwareQualities", impactSoftwareQualities);
             }
             searchRequest.AddParameter("ps", "500"); // Set page size to get more results
             searchRequest.AddHeader("Authorization", $"Bearer {token}");
-            _logger?.LogDebug("Making API call to get issues: GET {_apiUrl}/api/issues/search?componentKeys={Id}&severities={Severity}&ps=500", _apiUrl, id, severity);
+            _logger?.LogDebug(
+                "Making API call to get issues: GET {_apiUrl}/api/issues/search?componentKeys={Id}&severities={Severities}&impactSeverities={ImpactSeverities}&impactSoftwareQualities={ImpactSoftwareQualities}&ps=500",
+                _apiUrl,
+                projectKeyOrReleaseId,
+                severities,
+                impactSeverities,
+                impactSoftwareQualities);
 
             var searchResponse = await client.ExecuteGetAsync<SonarIssuesResponse>(searchRequest);
             if (!searchResponse.IsSuccessful)
@@ -72,7 +101,7 @@ namespace AIHelper.Services
                 var ruleRequest = new RestRequest("/api/rules/show", Method.Get);
                 ruleRequest.AddParameter("key", ruleKey);
                 ruleRequest.AddHeader("Authorization", $"Bearer {token}");
-                _logger?.LogDebug("Making API call to get rule details: GET {_apiUrl}/api/rules/show?key={RuleKey}", _apiUrl, ruleKey);
+                //_logger?.LogDebug("Making API call to get rule details: GET {_apiUrl}/api/rules/show?key={RuleKey}", _apiUrl, ruleKey);
 
                 var ruleResponse = await client.ExecuteGetAsync<SonarRuleResponse>(ruleRequest);
                 if (!ruleResponse.IsSuccessful)
@@ -113,7 +142,7 @@ namespace AIHelper.Services
 
                 remediationTasks.Add(remediationTask);
             }
-            _logger?.LogInformation("Fetched {IssueCount} Sonar issues for project {Id}", remediationTasks.Count, id);
+            _logger?.LogInformation("Fetched {IssueCount} Sonar issues for project {Id}", remediationTasks.Count, projectKeyOrReleaseId);
 
             return remediationTasks;
         }

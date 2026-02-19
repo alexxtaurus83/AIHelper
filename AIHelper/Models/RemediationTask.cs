@@ -10,4 +10,8 @@ public class RemediationTask
     public string? Description { get; set; }
     public string? RemediationAdvice { get; set; }
     public int EffortEstimation { get; set; } // only for sonar
+
+    public override string? ToString() {
+        return $"ScannerIssueId: '{ScannerIssueId}' | Name: '{Name}' | StartLine: '{StartLine}' | EndLine: {EndLine}";
+    }
 }

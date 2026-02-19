@@ -5,6 +5,6 @@ namespace AIHelper.Interfaces
 {
     public interface IRemediationService
     {
-        Task<object> RemediateProjectAsync(RemediationRequestDto request);
+        Task<object> RemediateAsync(RemediationRequestBaseDto request);
     }
 }

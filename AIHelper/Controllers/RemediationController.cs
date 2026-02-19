@@ -23,14 +23,36 @@ namespace AIHelper.Controllers
             _remediationService = remediationService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Remediate([FromBody] RemediationRequestDto remediationRequest)
+        /// <summary>
+        /// Initiates remediation for a Sonar project.
+        /// </summary>
+        /// <param name="request">The Sonar remediation request.</param>
+        /// <returns>The remediation result.</returns>
+        [HttpPost("sonar")]
+        public async Task<IActionResult> RemediateSonarProjectAsync([FromBody] SonarRemediationRequestDto request)
         {
-            _logger.LogInformation("Starting remediation for {ProjectKeyOrReleaseId}...", remediationRequest.ProjectKeyOrReleaseId);
-            _logger.LogDebug("Remediation request details: {@RemediationRequest}", remediationRequest);
+            _logger.LogInformation("Starting Sonar remediation for {ProjectKeyOrReleaseId}...", request.ProjectKeyOrReleaseId);
+            _logger.LogDebug("Sonar remediation request details: {@RemediationRequest}", request);
             
-            var result = await _remediationService.RemediateProjectAsync(remediationRequest);
-            _logger.LogDebug("Remediation result: {@Result}", result);
+            var result = await _remediationService.RemediateAsync(request);
+            _logger.LogDebug("Sonar remediation result: {@Result}", result);
+            
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Initiates remediation for a Fortify project.
+        /// </summary>
+        /// <param name="request">The Fortify remediation request.</param>
+        /// <returns>The remediation result.</returns>
+        [HttpPost("fortify")]
+        public async Task<IActionResult> RemediateFortifyProjectAsync([FromBody] FortifyRemediationRequestDto request)
+        {
+            _logger.LogInformation("Starting Fortify remediation for {ProjectKeyOrReleaseId}...", request.ProjectKeyOrReleaseId);
+            _logger.LogDebug("Fortify remediation request details: {@RemediationRequest}", request);
+            
+            var result = await _remediationService.RemediateAsync(request);
+            _logger.LogDebug("Fortify remediation result: {@Result}", result);
             
             return Ok(result);
         }

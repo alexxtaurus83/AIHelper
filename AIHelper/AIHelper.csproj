@@ -23,4 +23,8 @@
     <PackageReference Include="TextDiff.Sharp" Version="1.2.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="logs\" />
+  </ItemGroup>
+
 </Project>

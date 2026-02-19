@@ -30,9 +30,18 @@ public class RemediationRequestDto
     /// </summary>
     public string? ProjectKeyOrReleaseId { get; set; }
     /// <summary>
-    /// Gets or sets the minimum severity level for issues to be processed. Possible values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
+    /// Gets or sets a comma-separated list of issue severities to filter by. Possible values: INFO, MINOR, MAJOR, CRITICAL, BLOCKER.
     /// </summary>
-    public string? MinSeverity { get; set; } // e.g., "High"
+    public string? Severities { get; set; }
+    /// <summary>
+    /// Gets or sets a comma-separated list of software quality severities to filter by. Possible values: INFO, LOW, MEDIUM, HIGH, BLOCKER.
+    /// </summary>
+    public string? ImpactSeverities { get; set; }
+    /// <summary>
+    /// Gets or sets a comma-separated list of software qualities to filter by. Possible values: MAINTAINABILITY, RELIABILITY, SECURITY.
+    /// </summary>
+    public string? ImpactSoftwareQualities { get; set; }
+
     
     // Git Details
     /// <summary>
@@ -47,11 +56,6 @@ public class RemediationRequestDto
     /// Gets or sets the target branch name for the merge request.
     /// </summary>
     public string? TargetBranch { get; set; } // Branch to create MR into
-    /// <summary>
-    /// Gets or sets the name of the new branch to create for fixes.
-    /// </summary>
-    public string? NewBranchName { get; set; } // Branch to create for fixes
-    
     // Credentials (Passed per request)
     /// <summary>
     /// Gets or sets the GitLab access token.
@@ -66,4 +70,16 @@ public class RemediationRequestDto
     /// Gets or sets the SonarQube task ID.
     /// </summary>
     public string? TaskId { get; set; }
+
+    /// <summary>
+    /// Gets or sets the system prompt for LOCALIZE mode.
+    /// </summary>
+    public string? SystemPromptLocalize { get; set; }
+
+    /// <summary>
+    /// Gets or sets the system prompt for APPLY mode.
+    /// </summary>
+    public string? SystemPromptApply { get; set; }
+   
+    
 }

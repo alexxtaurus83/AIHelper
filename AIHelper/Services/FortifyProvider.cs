@@ -16,9 +16,19 @@ namespace AIHelper.Services
             _apiUrl = apiUrl ?? "https://api.ams.fortify.com";
             _logger = logger;
         }
-        public async Task<List<RemediationTask>> GetIssuesAsync(string id, string severity, string token, string? taskId = null, string? key = null, string? secret = null)
+        public async Task<List<RemediationTask>> GetIssuesAsync(
+            string id,
+            string? severities,
+            string? impactSeverities,
+            string? impactSoftwareQualities,
+            string token,           
+            string? taskId = null,
+            string? key = null,
+            string? secret = null)
         {
-            _logger?.LogInformation("Fetching Fortify issues for release {Id}, severity {Severity}", id, severity);
+            // TODO: Implement Fortify-side filtering support for impactSeverities and impactSoftwareQualities when API capabilities are defined.        
+
+            _logger?.LogInformation("Fetching Fortify issues for release {Id}, severity {Severity}", id, severities);
             var client = new RestClient(_apiUrl);
             
             // First, get the list of vulnerabilities
@@ -75,10 +85,18 @@ namespace AIHelper.Services
             }
             
             // Filter by severity after fetching all issues
-            if (!string.IsNullOrEmpty(severity))
+            // Severities is a comma-separated list: Critical,High,Medium,Low (case-insensitive)
+            if (!string.IsNullOrWhiteSpace(severities))
             {
-                _logger?.LogDebug("Filtering issues by severity {Severity}", severity);
-                remediationTasks = remediationTasks.Where(t => t.Severity.Equals(severity, StringComparison.OrdinalIgnoreCase)).ToList();
+                var severityList = severities.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                    .Select(s => s.ToLowerInvariant())
+                    .ToHashSet();
+                _logger?.LogDebug("Filtering issues by severities: {Severities}", string.Join(",", severityList));
+                remediationTasks = remediationTasks.Where(t =>
+                    !string.IsNullOrEmpty(t.Severity) &&
+                    severityList.Contains(t.Severity.ToLowerInvariant())).ToList();
+                _logger?.LogInformation("Filtered from {TotalCount} to {FilteredCount} issues based on severity",
+                    vulnerabilityList?.Data?.Count ?? 0, remediationTasks.Count);
             }
             _logger?.LogInformation("Fetched {IssueCount} Fortify issues for release {Id}", remediationTasks.Count, id);
             
